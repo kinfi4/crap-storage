@@ -30,4 +30,3 @@ def players_give_presents(players: list[str]) -> list[tuple[str, str]]:
 
 
 print(players_give_presents(["Ivan", "Tom", "Sam", "Mark", "Antony", "Samuel"]))
-

@@ -37,4 +37,5 @@ def circular_references():
 
 
 if __name__ == "__main__":
+    show_case()
     circular_references()
