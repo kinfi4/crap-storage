@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from sqlalchemy import String, DateTime, func, Text, DECIMAL, ForeignKey
+from sqlalchemy import String, DateTime, func, Text, DECIMAL, ForeignKey, select, Select
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from alchemy.orm.tables.mixins import MixinAsDict
+from alchemy.tables.mixins import MixinAsDict
 
 
 class Base(DeclarativeBase):
@@ -63,6 +63,22 @@ class Order(MixinAsDict, Base):
 
     user: Mapped[User] = relationship("User", back_populates="orders")
     order_items: Mapped[list["OrderItem"]] = relationship("OrderItem", back_populates="order")
+
+    @hybrid_property
+    def total_items(self) -> int:
+        return len(self.order_items)
+
+    @total_items.expression
+    def total_items(cls) -> int:
+        return (
+            select(func.sum(OrderItem.quantity))
+            .where(OrderItem.order_id == cls.id)
+            .group_by(cls.id)
+            .scalar_subquery()
+        )
+
+    def __str__(self) -> str:
+        return f"Order: {self.id}, of user {self.user_id}"
 
 
 class OrderItem(Base):

@@ -140,12 +140,51 @@ def get_orders_with_prejoin__and_custom_column() -> None:
             print(order.id, total_items, order.user.username, [item.product.name for item in order.order_items])
 
 
+def get_orders__additional_column(session: SessionManager) -> None:
+    with session.session() as session:
+        session: Session
+
+        result = (
+            session.query(Order)
+            .add_columns(
+                column("quantity", _selectable=(
+                        session.query(OrderItem)
+                        .where(OrderItem.order_id == Order.id)
+                        .cte()
+                    )
+                )
+            )
+            .join(OrderItem, Order.id == OrderItem.order_id)
+            .all()
+        )
+
+        for order, quantity in result:
+            print(order.id, quantity)
+
+
+def query_hybrid_property(session: SessionManager) -> None:
+    with session.session() as session:
+        session: Session
+
+        query = (
+            select(Order)
+            .where(Order.total_items > 2)
+        )
+
+        items = session.execute(query).all()
+
+        for row in items:
+            print(row[0])
+
+
 if __name__ == "__main__":
-    manager = SessionManager("postgresql+psycopg2://postgres:postgres@localhost/alchemy_train")
+    manager = SessionManager("postgresql+psycopg2://postgres:postgres@localhost/shop_db")
 
     # get_unique_usernames()
     # get_users_within_time_range__and__username_startswith()
     # get_user_and_total_bought_items()
     # get_top_products__with_total_sold()
     # get_orders__with_custom_column()
-    get_orders_with_prejoin__and_custom_column()
+    # get_orders_with_prejoin__and_custom_column()
+    # get_orders__additional_column(manager)
+    query_hybrid_property(manager)

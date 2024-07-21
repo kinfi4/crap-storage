@@ -18,6 +18,6 @@ def delete_user_by_id() -> None:
 
 
 if __name__ == "__main__":
-    manager = SessionManager("postgresql+psycopg2://postgres:postgres@localhost/alchemy_train")
+    manager = SessionManager("postgresql+psycopg2://postgres:postgres@localhost/stop_db")
 
     delete_user_by_id()

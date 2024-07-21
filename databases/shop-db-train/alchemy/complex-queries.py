@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import select, func, and_, alias, desc, column
+from sqlalchemy import select, func, and_, desc, column
 from sqlalchemy.orm import Session
 
 from tables import (
@@ -212,9 +212,9 @@ def get_top_products__with_reviews___with_having() -> None:
 
 
 if __name__ == "__main__":
-    manager = SessionManager("postgresql+psycopg2://postgres:postgres@localhost/alchemy_train")
+    manager = SessionManager("postgresql+psycopg2://postgres:postgres@localhost/shop_db")
 
     # get_top_5_users__in_most_popular_category()
     # get_top_5_users__logged_most_frequently_with_filters()
-    # get_top_products__with_reviews()
-    get_top_products__with_reviews___with_having()
+    get_top_products__with_reviews()
+    # get_top_products__with_reviews___with_having()

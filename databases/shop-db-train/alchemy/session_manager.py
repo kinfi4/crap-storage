@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session, Session
 
 class SessionManager:
     def __init__(self, db_uri: str) -> None:
-        self._engine = create_engine(url=db_uri, echo=True)
+        self._engine = create_engine(url=db_uri)
         self.Session = scoped_session(sessionmaker(bind=self._engine))
 
     @contextmanager
