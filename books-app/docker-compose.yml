@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+
+  app:
+    container_name: books-app
+    build:
+      dockerfile: ./etc/Dockerfile
+      context: .
+    command: bash -c "sleep 2 && alembic --config /etc/alembic.ini upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./app:/app
+      - ./etc:/etc
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: always
+    env_file: ./etc/.env
+
+  db:
+    container_name: postgresql_db
+    image: postgres:17
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file: ./etc/.env
+    volumes:
+      - books-app-graphql-db:/var/lib/postgresql/data
+
+volumes:
+  books-app-graphql-db:
